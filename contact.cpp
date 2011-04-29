@@ -20,16 +20,18 @@ Contact::Contact(QObject *parent)
 void Contact::remove()
 {
     /* XXX I suspect that stack allocation may not be correct... is that true? */
-    SObjectRemoveRequest req;
-    req.add(mData.id().localId());
-    req.start(globalManager);
+    SObjectRemoveRequest *req = new SObjectRemoveRequest(this);
+    connect(req, SIGNAL(finished()), req, SLOT(deleteLater()));
+    req->add(mData.id().localId());
+    req->start(globalManager);
 }
 
 void Contact::save()
 {
-    SObjectSaveRequest req;
-    req.add(mData);
-    req.start(globalManager);
+    SObjectSaveRequest *req = new SObjectSaveRequest(this);
+    connect(req, SIGNAL(finished()), req, SLOT(deleteLater()));
+    req->add(mData);
+    req->start(globalManager);
 }
 
 QString Contact::firstName() const
