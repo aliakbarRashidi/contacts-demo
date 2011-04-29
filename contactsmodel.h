@@ -18,9 +18,11 @@
 // Qt
 #include <QAbstractItemModel>
 
-// Us
-#include "sobject.h"
-#include "sobjectmanager.h"
+// saesu
+#include <sobject.h>
+#include <sobjectmanager.h>
+
+class Contact;
 
 class ContactsModel : public QAbstractItemModel
 {
@@ -42,12 +44,8 @@ public:
     virtual QModelIndex parent(const QModelIndex&) const;
     virtual Qt::ItemFlags flags ( const QModelIndex & index ) const;
     virtual QVariant data(const QModelIndex&,  int) const;
-    virtual bool	setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
     Q_INVOKABLE QObject *contactFor(int rowNumber);
     Q_INVOKABLE QObject *blankContact();
-
-public slots:
-    void deleteRow(const QModelIndex &index);
 
 private slots:
     void onReadAllComplete();
@@ -58,5 +56,5 @@ private slots:
 
 private:
     SObjectManager *mManager;
-    QList<SObject> mObjects;
+    QList<Contact *> mObjects;
 };

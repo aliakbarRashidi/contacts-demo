@@ -15,6 +15,8 @@
  * Inc., 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// Qt
+#include <QImage>
 
 // saesu
 #include "sobjectmanager.h"
@@ -52,7 +54,14 @@ void ContactsModel::onReadAllComplete()
 {
     SObjectFetchRequest *req = qobject_cast<SObjectFetchRequest*>(sender());
     beginResetModel();
-    mObjects = req->objects();
+    QList<SObject> objects = req->objects();
+
+    mObjects.clear();
+
+    foreach (const SObject &obj, objects) {
+        mObjects.append(new Contact(obj, this));
+    }
+
     endResetModel();
     sDebug() <<"Finished, " << mObjects.count() << " objects";
     req->deleteLater();
@@ -90,75 +99,13 @@ QVariant ContactsModel::data(const QModelIndex &index, int role) const
 
     switch (role)
     {
-    case FirstNameRole: return mObjects[index.row()].value("firstName");
-    case LastNameRole: return mObjects[index.row()].value("lastName");
-    case PhoneNumberRole: return mObjects[index.row()].value("phoneNumber");
-    case AvatarPathRole: return mObjects[index.row()].value("avatar");
-    }
-
-    if (role != Qt::DisplayRole &&
-        role != Qt::EditRole)
-        return QVariant();
-
-    switch (index.column()) {
-        case 0:
-            return mObjects[index.row()].id().localId().toString();
-            break;
-        case 1:
-            return mObjects[index.row()].hash().toHex();
-            break;
-        case 2:
-            return mObjects[index.row()].lastSaved();
-            break;
-        case 3:
-            return mObjects[index.row()].value("name");
-            break;
-        case 4:
-            return mObjects[index.row()].value("age");
-            break;
+    case FirstNameRole: return mObjects[index.row()]->firstName();
+    case LastNameRole: return mObjects[index.row()]->lastName();
+    case PhoneNumberRole: return mObjects[index.row()]->phoneNumber();
+    case AvatarPathRole: return QImage();
     }
 
     return QVariant();
-}
-
-bool ContactsModel::setData ( const QModelIndex & index, const QVariant & value, int role )
-{
-    if (role != Qt::EditRole)
-        return false;
-
-    SObject newObject;
-    SObject &object = newObject;
-
-    if (index.row() < mObjects.count())
-        object = mObjects[index.row()];
-
-    bool hasChanged = false;
-
-    switch (index.column()) {
-        case 0:
-        case 1:
-        case 2:
-            return false;
-        case 3:
-            object.setValue("name", value);
-            hasChanged = true;
-            break;
-        case 4:
-            object.setValue("age", value);
-            hasChanged = true;
-            break;
-    }
-
-    if (hasChanged) {
-        emit dataChanged(index, index);
-        SObjectSaveRequest *saveRequest = new SObjectSaveRequest;
-        connect(saveRequest, SIGNAL(finished()), saveRequest, SLOT(deleteLater()));
-        saveRequest->add(object);
-        saveRequest->start(mManager);
-        return true;
-    }
-
-    return hasChanged;
 }
 
 void ContactsModel::onObjectsAdded(const QList<SObjectLocalId> &objects)
@@ -175,7 +122,12 @@ void ContactsModel::onFetchedNewObjects()
 {
     SObjectFetchRequest *req = qobject_cast<SObjectFetchRequest*>(sender());
     beginResetModel(); // this is *criminally* lazy
-    mObjects.append(req->objects());
+    QList<SObject> objects = req->objects();
+
+    foreach (const SObject &obj, objects) {
+        mObjects.append(new Contact(obj, this));
+    }
+
     endResetModel();
     sDebug() <<"Finished, " << mObjects.count() << " objects";
     req->deleteLater();
@@ -188,7 +140,7 @@ void ContactsModel::onObjectsRemoved(const QList<SObjectLocalId> &objects)
     beginResetModel();
     foreach (const SObjectLocalId &id, objects) {
         for (int i = 0; i < mObjects.count(); ++i) {
-            if (mObjects.at(i).id().localId() == id) {
+            if (mObjects.at(i)->data().id().localId() == id) {
                 sDebug() << "Removing object at " << i;
                 mObjects.removeAt(i);
                 i--; // so we check the next one above the one we just removed
@@ -206,26 +158,9 @@ void ContactsModel::onObjectsUpdated(const QList<SObjectLocalId> &objects)
     fetchRequest->start(mManager);
 }
 
-void ContactsModel::deleteRow(const QModelIndex &index)
-{
-    if (index.row() >= mObjects.count())
-        return;
-
-    beginResetModel();
-
-    SObjectRemoveRequest *removeRequest = new SObjectRemoveRequest;
-    connect(removeRequest, SIGNAL(finished()), removeRequest, SLOT(deleteLater()));
-    removeRequest->add(mObjects.at(index.row()).id().localId());
-    removeRequest->start(mManager);
-    mObjects.removeAt(index.row());
-    endResetModel();
-}
-
 QObject *ContactsModel::contactFor(int rowNumber)
 {
-    /* XXX memory leak */
-    Contact *contact = new Contact(mObjects.at(rowNumber), this);
-    return contact;
+    return mObjects.at(rowNumber);
 }
 
 QObject *ContactsModel::blankContact()

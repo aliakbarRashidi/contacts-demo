@@ -17,6 +17,11 @@ Contact::Contact(QObject *parent)
 {
 }
 
+SObject Contact::data() const
+{
+    return mData;
+}
+
 void Contact::remove()
 {
     /* XXX I suspect that stack allocation may not be correct... is that true? */
