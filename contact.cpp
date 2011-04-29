@@ -17,6 +17,11 @@ Contact::Contact(QObject *parent)
 {
 }
 
+QString Contact::displayLabel() const
+{
+    return firstName() + " " + lastName();
+}
+
 SObject Contact::data() const
 {
     return mData;

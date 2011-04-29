@@ -55,6 +55,8 @@ private slots:
     void onObjectsUpdated(const QList<SObjectLocalId> &objects);
 
 private:
+    void addContacts(const QList<SObject> &objects);
+
     SObjectManager *mManager;
     QList<Contact *> mObjects;
 };
