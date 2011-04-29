@@ -214,13 +214,13 @@ void ContactsModel::onReadUpdatesComplete()
                 oldObject.value("lastName") != object.value("lastName")) {
                 // names differ, "move" (or at least simulate it by adding a
                 // new contact and removing the old one)
-                const int source = i;
+                int source = i;
                 
                 QList<SObject>::Iterator it;
                 it = qLowerBound(mObjects.begin(), mObjects.end(), object, contactsSort);
                 int dest;
                 if (it == mObjects.end())
-                    dest = mObjects.count();
+                    dest = mObjects.count() - 1;
                 else
                     dest = it - mObjects.begin();
 
@@ -228,8 +228,9 @@ void ContactsModel::onReadUpdatesComplete()
 
                 // do the actual move
                 beginMoveRows(QModelIndex(), source, source, QModelIndex(), (dest > source) ? (dest + 1) : dest);
-                mObjects.insert(it, object);
-                mObjects.removeAt(source);
+                mObjects.move(source, dest);
+                mObjects.removeAt(dest);
+                mObjects.insert(dest, object);
                 endMoveRows();
             } else {
                 emit dataChanged(index(i, 0, QModelIndex()), index(i, 0, QModelIndex()));
