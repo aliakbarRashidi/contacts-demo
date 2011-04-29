@@ -29,9 +29,9 @@
 #include "contactsmodel.h"
 #include "contact.h"
 
-ContactsModel::ContactsModel()
-    : QAbstractItemModel()
-    , mManager(QLatin1String("saesu"))
+ContactsModel::ContactsModel(SObjectManager *m, QObject *parent)
+    : QAbstractItemModel(parent)
+    , mManager(m)
 {
     QHash<int,QByteArray> roles;
     roles[FirstNameRole] = "firstName";
@@ -40,12 +40,12 @@ ContactsModel::ContactsModel()
     roles[AvatarPathRole] = "avatar";
     setRoleNames(roles);
 
-    connect(&mManager, SIGNAL(objectsAdded(QList<SObjectLocalId>)), SLOT(onObjectsAdded(QList<SObjectLocalId>)));
-    connect(&mManager, SIGNAL(objectsRemoved(QList<SObjectLocalId>)), SLOT(onObjectsRemoved(QList<SObjectLocalId>)));
-    connect(&mManager, SIGNAL(objectsUpdated(QList<SObjectLocalId>)), SLOT(onObjectsUpdated(QList<SObjectLocalId>)));
+    connect(mManager, SIGNAL(objectsAdded(QList<SObjectLocalId>)), SLOT(onObjectsAdded(QList<SObjectLocalId>)));
+    connect(mManager, SIGNAL(objectsRemoved(QList<SObjectLocalId>)), SLOT(onObjectsRemoved(QList<SObjectLocalId>)));
+    connect(mManager, SIGNAL(objectsUpdated(QList<SObjectLocalId>)), SLOT(onObjectsUpdated(QList<SObjectLocalId>)));
     SObjectFetchRequest *fetchRequest = new SObjectFetchRequest;
     connect(fetchRequest, SIGNAL(finished()), SLOT(onReadAllComplete()));
-    fetchRequest->start(&mManager);
+    fetchRequest->start(mManager);
 }
 
 void ContactsModel::onReadAllComplete()
@@ -154,7 +154,7 @@ bool ContactsModel::setData ( const QModelIndex & index, const QVariant & value,
         SObjectSaveRequest *saveRequest = new SObjectSaveRequest;
         connect(saveRequest, SIGNAL(finished()), saveRequest, SLOT(deleteLater()));
         saveRequest->add(object);
-        saveRequest->start(&mManager);
+        saveRequest->start(mManager);
         return true;
     }
 
@@ -168,7 +168,7 @@ void ContactsModel::onObjectsAdded(const QList<SObjectLocalId> &objects)
     SObjectLocalIdFilter localIdFilter;
     localIdFilter.setIds(objects);
     fetchRequest->setFilter(localIdFilter);
-    fetchRequest->start(&mManager);
+    fetchRequest->start(mManager);
 }
 
 void ContactsModel::onFetchedNewObjects()
@@ -203,7 +203,7 @@ void ContactsModel::onObjectsUpdated(const QList<SObjectLocalId> &objects)
     // blow away the whole model, refetch everything. really, really inefficient.
     SObjectFetchRequest *fetchRequest = new SObjectFetchRequest;
     connect(fetchRequest, SIGNAL(finished()), SLOT(onReadAllComplete()));
-    fetchRequest->start(&mManager);
+    fetchRequest->start(mManager);
 }
 
 void ContactsModel::deleteRow(const QModelIndex &index)
@@ -216,7 +216,7 @@ void ContactsModel::deleteRow(const QModelIndex &index)
     SObjectRemoveRequest *removeRequest = new SObjectRemoveRequest;
     connect(removeRequest, SIGNAL(finished()), removeRequest, SLOT(deleteLater()));
     removeRequest->add(mObjects.at(index.row()).id().localId());
-    removeRequest->start(&mManager);
+    removeRequest->start(mManager);
     mObjects.removeAt(index.row());
     endResetModel();
 }

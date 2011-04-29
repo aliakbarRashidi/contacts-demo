@@ -34,7 +34,8 @@ public:
         AvatarPathRole
     };
 
-    ContactsModel();
+    ContactsModel(SObjectManager *manager, QObject *parent = 0);
+
     virtual QModelIndex index(int,  int,  const QModelIndex&) const;
     virtual int rowCount(const QModelIndex&) const;
     virtual int columnCount(const QModelIndex&) const;
@@ -55,6 +56,6 @@ private slots:
     void onObjectsUpdated(const QList<SObjectLocalId> &objects);
 
 private:
-    SObjectManager mManager;
+    SObjectManager *mManager;
     QList<SObject> mObjects;
 };

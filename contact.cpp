@@ -3,6 +3,9 @@
 #include "saesu/sobjectremoverequest.h"
 #include "saesu/sobjectsaverequest.h"
 
+/* main.cpp. Hack. Fix it. */
+extern SObjectManager *globalManager;
+
 Contact::Contact(const SObject &object, QObject *parent)
     : QObject(parent)
     , mData(object)
@@ -12,20 +15,17 @@ Contact::Contact(const SObject &object, QObject *parent)
 
 void Contact::remove()
 {
-    /* XXX Should not create a new manager for every one of these, probably..? */
-    /* XXX I suspect that stack allocation may not be correct. */
-    SObjectManager manager("saesu");
+    /* XXX I suspect that stack allocation may not be correct... is that true? */
     SObjectRemoveRequest req;
     req.add(mData.id().localId());
-    req.start(&manager);
+    req.start(globalManager);
 }
 
 void Contact::save()
 {
-    SObjectManager manager("saesu");
     SObjectSaveRequest req;
     req.add(mData);
-    req.start(&manager);
+    req.start(globalManager);
 }
 
 QVariant Contact::firstName() const
