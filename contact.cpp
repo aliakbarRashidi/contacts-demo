@@ -8,23 +8,13 @@ extern SObjectManager *globalManager;
 
 Contact::Contact(const SObject &object, QObject *parent)
     : QObject(parent)
-    , mData(object)
+    , mData(SObject(object))
 {
 }
 
 Contact::Contact(QObject *parent)
     : QObject(parent)
 {
-}
-
-QString Contact::displayLabel() const
-{
-    return firstName() + " " + lastName();
-}
-
-SObject Contact::data() const
-{
-    return mData;
 }
 
 void Contact::remove()

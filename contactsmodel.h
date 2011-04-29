@@ -53,10 +53,11 @@ private slots:
     void onFetchedNewObjects();
     void onObjectsRemoved(const QList<SObjectLocalId> &objects);
     void onObjectsUpdated(const QList<SObjectLocalId> &objects);
+    void onReadUpdatesComplete();
 
 private:
     void addContacts(const QList<SObject> &objects);
 
     SObjectManager *mManager;
-    QList<Contact *> mObjects;
+    QList<SObject> mObjects;
 };

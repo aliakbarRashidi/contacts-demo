@@ -50,19 +50,20 @@ ContactsModel::ContactsModel(SObjectManager *m, QObject *parent)
     fetchRequest->start(mManager);
 }
 
-static bool contactsSort(Contact *left, Contact *right)
+static bool contactsSort(const SObject &left, const SObject &right)
 {
-    return QString::localeAwareCompare(left->displayLabel(), right->displayLabel()) < 0;
+    QString lhs = left.value("firstName").toString() + " " + left.value("lastName").toString();
+    QString rhs = right.value("firstName").toString() + " " + right.value("lastName").toString();
+    return QString::localeAwareCompare(lhs, rhs) < 0;
 }
 
 void ContactsModel::addContacts(const QList<SObject> &objects)
 {
-    QList<Contact*>::Iterator it;
+    QList<SObject>::Iterator it;
 
     foreach (const SObject &obj, objects) {
-        Contact *contact = new Contact(obj, this);
-        it = qLowerBound(mObjects.begin(), mObjects.end(), contact, contactsSort);
-        mObjects.insert(it, contact);
+        it = qLowerBound(mObjects.begin(), mObjects.end(), obj, contactsSort);
+        mObjects.insert(it, obj);
     }
 }
 
@@ -109,12 +110,18 @@ QVariant ContactsModel::data(const QModelIndex &index, int role) const
     if (index.row() >= mObjects.count())
         return QVariant();
 
+    const SObject &obj = mObjects.at(index.row());
+
     switch (role)
     {
-    case FirstNameRole: return mObjects[index.row()]->firstName();
-    case LastNameRole: return mObjects[index.row()]->lastName();
-    case PhoneNumberRole: return mObjects[index.row()]->phoneNumber();
-    case AvatarPathRole: return QImage();
+    case FirstNameRole:
+        return obj.value("firstName");
+    case LastNameRole:
+        return obj.value("lastName");
+    case PhoneNumberRole:
+        return obj.value("phoneNumber");
+    case AvatarPathRole:
+        return QImage();
     }
 
     return QVariant();
@@ -149,7 +156,7 @@ void ContactsModel::onObjectsRemoved(const QList<SObjectLocalId> &objects)
     beginResetModel();
     foreach (const SObjectLocalId &id, objects) {
         for (int i = 0; i < mObjects.count(); ++i) {
-            if (mObjects.at(i)->data().id().localId() == id) {
+            if (mObjects.at(i).id().localId() == id) {
                 sDebug() << "Removing object at " << i;
                 mObjects.removeAt(i);
                 i--; // so we check the next one above the one we just removed
@@ -163,13 +170,68 @@ void ContactsModel::onObjectsUpdated(const QList<SObjectLocalId> &objects)
 {
     // blow away the whole model, refetch everything. really, really inefficient.
     SObjectFetchRequest *fetchRequest = new SObjectFetchRequest;
-    connect(fetchRequest, SIGNAL(finished()), SLOT(onReadAllComplete()));
+    connect(fetchRequest, SIGNAL(finished()), SLOT(onReadUpdatesComplete()));
+    SObjectLocalIdFilter localIdFilter;
+    localIdFilter.setIds(objects);
+    fetchRequest->setFilter(localIdFilter);
     fetchRequest->start(mManager);
+}
+
+void ContactsModel::onReadUpdatesComplete()
+{
+    SObjectFetchRequest *req = qobject_cast<SObjectFetchRequest*>(sender());
+
+    QList<SObject> objects = req->objects();
+
+    foreach (const SObject &object, objects) {
+        for (int i = 0; i < mObjects.count(); ++i) {
+            const SObject &oldObject = mObjects.at(i);
+            if (oldObject.id().localId() != object.id().localId())
+                continue;
+
+            sDebug() << oldObject.value("firstName");
+            sDebug() << object.value("firstName");
+
+            // check if the firstName and lastName changed, if so, we need to
+            // move them, if not, we need to just emit dataChanged
+            if (oldObject.value("firstName") != object.value("firstName") ||
+                oldObject.value("lastName") != object.value("lastName")) {
+                // names differ, "move" (or at least simulate it by adding a
+                // new contact and removing the old one)
+                const int source = i;
+                
+                QList<SObject>::Iterator it;
+                it = qLowerBound(mObjects.begin(), mObjects.end(), object, contactsSort);
+                int dest;
+                if (it == mObjects.end())
+                    dest = mObjects.count() - 1;
+                else
+                    dest = it - mObjects.begin();
+
+                sDebug() << "Moving row from " << source << " to " << dest;
+
+                // do the actual move
+                beginMoveRows(QModelIndex(), source, source, QModelIndex(), (dest > source) ? (dest + 1) : dest);
+                mObjects.removeAt(source);
+                mObjects.insert(it, object);
+                endMoveRows();
+            } else {
+                emit dataChanged(index(i, 0, QModelIndex()), index(i, 0, QModelIndex()));
+            }
+
+            break;
+        }
+    }
+
+    sDebug() <<"Finished, " << mObjects.count() << " objects";
+    req->deleteLater();
 }
 
 QObject *ContactsModel::contactFor(int rowNumber)
 {
-    return mObjects.at(rowNumber);
+    // XXX memory leak and ugly design
+    Contact *contact = new Contact(mObjects.at(rowNumber), this);
+    return contact;
 }
 
 QObject *ContactsModel::blankContact()

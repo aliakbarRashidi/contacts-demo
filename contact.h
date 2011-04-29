@@ -11,10 +11,6 @@ public:
     explicit Contact(const SObject &object, QObject *parent);
     virtual ~Contact() { }
 
-    QString displayLabel() const;
-
-    SObject data() const;
-
     Q_PROPERTY(QString firstName READ firstName WRITE setFirstName NOTIFY firstNameChanged);
     QString firstName() const;
     void setFirstName(const QString &firstName);
