@@ -1,4 +1,5 @@
 #include <QObject>
+#include <QUrl>
 
 #include <sobject.h>
 
@@ -23,6 +24,10 @@ public:
     QString phoneNumber() const;
     void setPhoneNumber(const QString &phoneNumber);
 
+    Q_PROPERTY(QUrl avatar READ avatar WRITE setAvatar NOTIFY avatarChanged);
+    QUrl avatar() const;
+    void setAvatar(const QUrl &phoneNumber);
+
 public slots:
     void remove();
     void save();
@@ -31,6 +36,7 @@ signals:
     void firstNameChanged();
     void lastNameChanged();
     void phoneNumberChanged();
+    void avatarChanged();
 
 private:
     SObject mData;

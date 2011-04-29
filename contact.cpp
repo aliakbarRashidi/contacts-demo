@@ -67,3 +67,14 @@ void Contact::setPhoneNumber(const QString &phoneNumber)
     emit phoneNumberChanged();
 }
 
+QUrl Contact::avatar() const
+{
+    return mData.value("avatar").toUrl();
+}
+
+void Contact::setAvatar(const QUrl &avatar)
+{
+    mData.setValue("avatar", avatar);
+    emit avatarChanged();
+}
+

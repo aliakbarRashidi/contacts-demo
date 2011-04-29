@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Qt.labs.folderlistmodel 1.0
 
 Item {
     id: contactView
@@ -111,5 +112,52 @@ Item {
                 }
             }
         }
+
+        Text {
+            // TODO: this is a horrible, horrible hack
+            text: "Set Avatar"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    avatarSelector.visible = true
+                }
+            }
+        }
     }
+
+    Rectangle {
+        anchors.fill: parent
+        clip: true
+        id: avatarSelector
+        visible: false
+
+        ListView {
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            model: FolderListModel {
+                folder: "."
+            }
+            delegate: Item {
+                width: img.width
+                height: img.height
+                Image {
+                    id: img
+                    source: filePath
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            contactView.contact.avatar = filePath
+                            avatarSelector.visible = false
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }

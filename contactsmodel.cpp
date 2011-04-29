@@ -137,7 +137,7 @@ QVariant ContactsModel::data(const QModelIndex &index, int role) const
     case PhoneNumberRole:
         return obj.value("phoneNumber");
     case AvatarPathRole:
-        return QImage();
+        return obj.value("avatar");
     }
 
     return QVariant();
