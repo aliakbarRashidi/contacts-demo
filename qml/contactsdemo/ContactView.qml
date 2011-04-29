@@ -61,10 +61,45 @@ Item {
                     selectByMouse: true
 
                     text: contact[rpt2.model[index]]
-                    /*onTextChanged: {
+
+                    onAccepted: {
                         contact[rpt2.model[index]] = text
-                    }*/
+                    }
                 }
+            }
+        }
+    }
+
+    Row {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        spacing: 10
+
+        Text {
+            text: "Delete"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: contact.remove()
+            }
+        }
+
+        Text {
+            text: "Save"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: contact.save()
+            }
+        }
+
+        Text {
+            text: "New"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: console.log("wut?")
             }
         }
     }

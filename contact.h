@@ -22,6 +22,10 @@ public:
     QVariant phoneNumber() const;
     void setPhoneNumber(const QVariant &phoneNumber);
 
+public slots:
+    void remove();
+    void save();
+
 signals:
     void firstNameChanged();
     void lastNameChanged();
