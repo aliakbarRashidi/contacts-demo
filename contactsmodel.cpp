@@ -221,19 +221,28 @@ void ContactsModel::onReadUpdatesComplete()
                 int dest;
                 if (it == mObjects.end())
                     dest = mObjects.count() - 1;
-                else
+                else {
                     dest = it - mObjects.begin();
 
-                sDebug() << "Moving row from " << source << " to " << dest;
+                    if (dest > source)
+                        dest--;
+                }
 
-                // do the actual move
-                beginMoveRows(QModelIndex(), source, source, QModelIndex(), (dest > source) ? (dest + 1) : dest);
-                mObjects.move(source, dest);
-                mObjects.removeAt(dest);
-                mObjects.insert(dest, object);
-                endMoveRows();
+                if (source == dest) {
+                    QModelIndex row = index(source, 0, QModelIndex());
+                    mObjects.replace(source, object);
+                    emit dataChanged(row, row);
+                } else {
+                    // do the actual move
+                    beginMoveRows(QModelIndex(), source, source, QModelIndex(), (dest > source) ? (dest + 1) : dest);
+                    mObjects.removeAt(source);
+                    mObjects.insert(dest, object);
+                    endMoveRows();
+                }
             } else {
-                emit dataChanged(index(i, 0, QModelIndex()), index(i, 0, QModelIndex()));
+                QModelIndex row = index(i, 0, QModelIndex());
+                mObjects.replace(i, object);
+                emit dataChanged(row, row);
             }
 
             break;
