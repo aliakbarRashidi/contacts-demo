@@ -99,7 +99,10 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: console.log("wut?")
+                onClicked: {
+                    /* This is ugly, we shouldn't have to touch contactsModel here. */
+                    contact = contactsModel.blankContact()
+                }
             }
         }
     }

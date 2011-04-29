@@ -7,6 +7,7 @@ class Contact : public QObject
     Q_OBJECT
 
 public:
+    explicit Contact(QObject *parent = 0);
     explicit Contact(const SObject &object, QObject *parent);
     virtual ~Contact() { }
 

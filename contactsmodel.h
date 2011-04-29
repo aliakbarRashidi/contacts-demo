@@ -44,6 +44,7 @@ public:
     virtual QVariant data(const QModelIndex&,  int) const;
     virtual bool	setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
     Q_INVOKABLE QObject *contactFor(int rowNumber);
+    Q_INVOKABLE QObject *blankContact();
 
 public slots:
     void deleteRow(const QModelIndex &index);

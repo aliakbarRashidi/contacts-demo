@@ -1,9 +1,7 @@
 #include <QtGui/QApplication>
 #include "qmlapplicationviewer.h"
 #include "contactsmodel.h"
-#include "contact.h"
 #include <QDeclarativeContext>
-#include <QtDeclarative>
 
 /* Ugly hack, used for contact.cpp. Robin should fix this. */
 SObjectManager *globalManager;

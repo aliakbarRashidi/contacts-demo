@@ -10,7 +10,11 @@ Contact::Contact(const SObject &object, QObject *parent)
     : QObject(parent)
     , mData(object)
 {
+}
 
+Contact::Contact(QObject *parent)
+    : QObject(parent)
+{
 }
 
 void Contact::remove()

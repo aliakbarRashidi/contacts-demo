@@ -12,6 +12,10 @@ Item {
 
         width: 300
         focus: true
+
+        onCurrentContactChanged: {
+            contactView.contact = currentContact
+        }
     }
 
     ContactView {
@@ -20,7 +24,5 @@ Item {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-
-        contact: contactsList.currentContact
     }
 }

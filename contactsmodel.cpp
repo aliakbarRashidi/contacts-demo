@@ -223,6 +223,13 @@ void ContactsModel::deleteRow(const QModelIndex &index)
 
 QObject *ContactsModel::contactFor(int rowNumber)
 {
+    /* XXX memory leak */
     Contact *contact = new Contact(mObjects.at(rowNumber), this);
     return contact;
+}
+
+QObject *ContactsModel::blankContact()
+{
+    /* XXX memory leak and ugly design */
+    return new Contact(this);
 }
