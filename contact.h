@@ -11,17 +11,17 @@ public:
     explicit Contact(const SObject &object, QObject *parent);
     virtual ~Contact() { }
 
-    Q_PROPERTY(QVariant firstName READ firstName WRITE setFirstName NOTIFY firstNameChanged);
-    QVariant firstName() const;
-    void setFirstName(const QVariant &firstName);
+    Q_PROPERTY(QString firstName READ firstName WRITE setFirstName NOTIFY firstNameChanged);
+    QString firstName() const;
+    void setFirstName(const QString &firstName);
 
-    Q_PROPERTY(QVariant lastName READ lastName WRITE setLastName NOTIFY lastNameChanged);
-    QVariant lastName() const;
-    void setLastName(const QVariant &lastName);
+    Q_PROPERTY(QString lastName READ lastName WRITE setLastName NOTIFY lastNameChanged);
+    QString lastName() const;
+    void setLastName(const QString &lastName);
 
-    Q_PROPERTY(QVariant phoneNumber READ phoneNumber WRITE setPhoneNumber NOTIFY phoneNumberChanged);
-    QVariant phoneNumber() const;
-    void setPhoneNumber(const QVariant &phoneNumber);
+    Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber NOTIFY phoneNumberChanged);
+    QString phoneNumber() const;
+    void setPhoneNumber(const QString &phoneNumber);
 
 public slots:
     void remove();

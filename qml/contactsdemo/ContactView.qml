@@ -27,44 +27,50 @@ Item {
         color: "#b2b2b2"
     }
 
-    Row {
-        x: 16
-        y: 16
+    Grid {
+        id: detailArea
+        anchors.left: parent.left
+        anchors.right: avatarImage.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.margins: 16
         spacing: 20
+        flow: Grid.TopToBottom
+        columns: 2
 
-        Column {
-            spacing: 20
+        Repeater {
+            id: rpt
+            model: ["First Name:", "Last Name:", "Phone:"]
 
-            Repeater {
-                id: rpt
-                model: ["First Name:", "Last Name:", "Phone:"]
+            property int cellWidth: 0
 
-                delegate: Text {
-                    color: "#afafaf"
-                    font.pixelSize: 26
-                    text: rpt.model[index]
-                    anchors.right: parent.right
-                }
+            delegate: Text {
+                color: "#afafaf"
+                font.pixelSize: 26
+                text: rpt.model[index]
+                horizontalAlignment: Qt.AlignRight
+                width: rpt.cellWidth
+
+                /* Required for horizontal alignment to succeed */
+                onPaintedSizeChanged: rpt.cellWidth = Math.max(rpt.cellWidth, paintedWidth)
             }
         }
 
-        Column {
-            spacing: 20
+        Repeater {
+            id: rpt2
+            model: ["firstName", "lastName", "phoneNumber"]
 
-            Repeater {
-                id: rpt2
-                model: ["firstName", "lastName", "phoneNumber"]
+            delegate: TextInput {
+                font.pixelSize: 26
+                smooth: true
+                selectByMouse: true
+                width: detailArea.width - x
 
-                delegate: TextInput {
-                    font.pixelSize: 26
-                    smooth: true
-                    selectByMouse: true
+                text: contact[rpt2.model[index]]
 
-                    text: contact[rpt2.model[index]]
-
-                    onAccepted: {
+                onTextChanged: {
+                    if (contact[rpt2.model[index]] != text)
                         contact[rpt2.model[index]] = text
-                    }
                 }
             }
         }

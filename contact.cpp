@@ -32,34 +32,34 @@ void Contact::save()
     req.start(globalManager);
 }
 
-QVariant Contact::firstName() const
+QString Contact::firstName() const
 {
-    return mData.value("firstName");
+    return mData.value("firstName").toString();
 }
 
-void Contact::setFirstName(const QVariant &firstName)
+void Contact::setFirstName(const QString &firstName)
 {
     mData.setValue("firstName", firstName);
     emit firstNameChanged();
 }
 
-QVariant Contact::lastName() const
+QString Contact::lastName() const
 {
-    return mData.value("lastName");
+    return mData.value("lastName").toString();
 }
 
-void Contact::setLastName(const QVariant &lastName)
+void Contact::setLastName(const QString &lastName)
 {
     mData.setValue("lastName", lastName);
     emit lastNameChanged();
 }
 
-QVariant Contact::phoneNumber() const
+QString Contact::phoneNumber() const
 {
-    return mData.value("phoneNumber");
+    return mData.value("phoneNumber").toString();
 }
 
-void Contact::setPhoneNumber(const QVariant &phoneNumber)
+void Contact::setPhoneNumber(const QString &phoneNumber)
 {
     mData.setValue("phoneNumber", phoneNumber);
     emit phoneNumberChanged();
