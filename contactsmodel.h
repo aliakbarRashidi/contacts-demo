@@ -27,25 +27,32 @@ class ContactsModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-	ContactsModel();
-	virtual QModelIndex index(int,  int,  const QModelIndex&) const;
-	virtual int rowCount(const QModelIndex&) const;
-	virtual int columnCount(const QModelIndex&) const;
-	virtual QModelIndex parent(const QModelIndex&) const;
-	virtual Qt::ItemFlags flags ( const QModelIndex & index ) const;
-	virtual QVariant data(const QModelIndex&,  int) const;
-	virtual bool	setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+    enum {
+        FirstNameRole = Qt::UserRole,
+        LastNameRole,
+        PhoneNumberRole,
+        AvatarPathRole
+    };
+
+    ContactsModel();
+    virtual QModelIndex index(int,  int,  const QModelIndex&) const;
+    virtual int rowCount(const QModelIndex&) const;
+    virtual int columnCount(const QModelIndex&) const;
+    virtual QModelIndex parent(const QModelIndex&) const;
+    virtual Qt::ItemFlags flags ( const QModelIndex & index ) const;
+    virtual QVariant data(const QModelIndex&,  int) const;
+    virtual bool	setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
     Q_INVOKABLE QObject *contactFor(int rowNumber);
 
 public slots:
     void deleteRow(const QModelIndex &index);
 
 private slots:
-	void onReadAllComplete();
-	void onObjectsAdded(const QList<SObjectLocalId> &objects);
-	void onFetchedNewObjects();
-	void onObjectsRemoved(const QList<SObjectLocalId> &objects);
-	void onObjectsUpdated(const QList<SObjectLocalId> &objects);
+    void onReadAllComplete();
+    void onObjectsAdded(const QList<SObjectLocalId> &objects);
+    void onFetchedNewObjects();
+    void onObjectsRemoved(const QList<SObjectLocalId> &objects);
+    void onObjectsUpdated(const QList<SObjectLocalId> &objects);
 
 private:
     SObjectManager mManager;

@@ -53,7 +53,7 @@ Item {
 
             Repeater {
                 id: rpt2
-                model: ["firstName", "lastName", "phone"]
+                model: ["firstName", "lastName", "phoneNumber"]
 
                 delegate: TextInput {
                     font.pixelSize: 26
@@ -61,9 +61,9 @@ Item {
                     selectByMouse: true
 
                     text: contact[rpt2.model[index]]
-                    onTextChanged: {
+                    /*onTextChanged: {
                         contact[rpt2.model[index]] = text
-                    }
+                    }*/
                 }
             }
         }

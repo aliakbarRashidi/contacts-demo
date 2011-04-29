@@ -11,7 +11,7 @@ ListView {
         QtObject { property string firstName: "Robin"; property string lastName: "Burchell";
             property string phone: "+1 888 501 4931"; property string avatar: "usertile43.bmp" }
     ]
-    model: contactModel
+    model: contactsModel
 
     delegate: Qt.createComponent("ContactsListItem.qml")
     spacing: 5
@@ -58,6 +58,6 @@ ListView {
         if (currentIndex < 0)
             currentContact = null
         else
-            currentContact = model[currentIndex]
+            currentContact = contactsModel.contactFor(currentIndex)
     }
 }

@@ -33,6 +33,13 @@ ContactsModel::ContactsModel()
     : QAbstractItemModel()
     , mManager(QLatin1String("saesu"))
 {
+    QHash<int,QByteArray> roles;
+    roles[FirstNameRole] = "firstName";
+    roles[LastNameRole] = "lastName";
+    roles[PhoneNumberRole] = "phoneNumber";
+    roles[AvatarPathRole] = "avatar";
+    setRoleNames(roles);
+
     connect(&mManager, SIGNAL(objectsAdded(QList<SObjectLocalId>)), SLOT(onObjectsAdded(QList<SObjectLocalId>)));
     connect(&mManager, SIGNAL(objectsRemoved(QList<SObjectLocalId>)), SLOT(onObjectsRemoved(QList<SObjectLocalId>)));
     connect(&mManager, SIGNAL(objectsUpdated(QList<SObjectLocalId>)), SLOT(onObjectsUpdated(QList<SObjectLocalId>)));
@@ -58,7 +65,7 @@ QModelIndex ContactsModel::index(int row, int col,  const QModelIndex&) const
 
 int ContactsModel::rowCount(const QModelIndex &index) const
 {
-    return mObjects.count() + 1;
+    return mObjects.count();
 }
 
 int ContactsModel::columnCount(const QModelIndex &index) const
@@ -78,11 +85,19 @@ Qt::ItemFlags ContactsModel::flags ( const QModelIndex & index ) const
 
 QVariant ContactsModel::data(const QModelIndex &index, int role) const
 {
-    if (role != Qt::DisplayRole &&
-        role != Qt::EditRole)
+    if (index.row() >= mObjects.count())
         return QVariant();
 
-    if (index.row() >= mObjects.count())
+    switch (role)
+    {
+    case FirstNameRole: return mObjects[index.row()].value("firstName");
+    case LastNameRole: return mObjects[index.row()].value("lastName");
+    case PhoneNumberRole: return mObjects[index.row()].value("phoneNumber");
+    case AvatarPathRole: return mObjects[index.row()].value("avatar");
+    }
+
+    if (role != Qt::DisplayRole &&
+        role != Qt::EditRole)
         return QVariant();
 
     switch (index.column()) {

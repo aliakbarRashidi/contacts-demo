@@ -38,7 +38,7 @@ Item {
             elide: Text.ElideRight
             color: "#7e7e7e"
 
-            text: phone
+            text: phoneNumber
         }
     }
 
