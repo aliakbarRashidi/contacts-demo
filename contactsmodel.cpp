@@ -153,17 +153,17 @@ void ContactsModel::onObjectsRemoved(const QList<SObjectLocalId> &objects)
 {
     // crazily inefficient, but hey, this is demo code!
     sDebug() << "Removing " << objects;
-    beginResetModel();
     foreach (const SObjectLocalId &id, objects) {
         for (int i = 0; i < mObjects.count(); ++i) {
             if (mObjects.at(i).id().localId() == id) {
                 sDebug() << "Removing object at " << i;
+                beginRemoveRows(QModelIndex(), i, i);
                 mObjects.removeAt(i);
+                endRemoveRows();
                 i--; // so we check the next one above the one we just removed
             }
         }
     }
-    endResetModel();
 }
 
 void ContactsModel::onObjectsUpdated(const QList<SObjectLocalId> &objects)
