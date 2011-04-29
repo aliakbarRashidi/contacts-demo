@@ -56,7 +56,7 @@ private slots:
     void onReadUpdatesComplete();
 
 private:
-    void addContacts(const QList<SObject> &objects);
+    void addContacts(const QList<SObject> &objects, bool modelReset);
 
     SObjectManager *mManager;
     QList<SObject> mObjects;

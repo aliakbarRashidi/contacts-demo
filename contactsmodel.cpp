@@ -57,13 +57,32 @@ static bool contactsSort(const SObject &left, const SObject &right)
     return QString::localeAwareCompare(lhs, rhs) < 0;
 }
 
-void ContactsModel::addContacts(const QList<SObject> &objects)
+void ContactsModel::addContacts(const QList<SObject> &objects, bool modelReset)
 {
     QList<SObject>::Iterator it;
 
+    if (modelReset) {
+        beginResetModel();
+        mObjects.clear();
+    }
+
     foreach (const SObject &obj, objects) {
         it = qLowerBound(mObjects.begin(), mObjects.end(), obj, contactsSort);
-        mObjects.insert(it, obj);
+        int dest;
+        if (it == mObjects.end())
+            dest = mObjects.count() - 1;
+        else
+            dest = it - mObjects.begin();
+        
+        if (!modelReset)
+            beginInsertRows(QModelIndex(), dest, dest);
+        mObjects.insert(dest, obj);
+        if (!modelReset)
+            endInsertRows();
+    }
+    
+    if (modelReset) {
+        endResetModel();
     }
 }
 
@@ -71,10 +90,7 @@ void ContactsModel::onReadAllComplete()
 {
     SObjectFetchRequest *req = qobject_cast<SObjectFetchRequest*>(sender());
     
-    beginResetModel();
-    mObjects.clear();
-    addContacts(req->objects());
-    endResetModel();
+    addContacts(req->objects(), true);
 
     sDebug() <<"Finished, " << mObjects.count() << " objects";
     req->deleteLater();
@@ -142,7 +158,7 @@ void ContactsModel::onFetchedNewObjects()
     SObjectFetchRequest *req = qobject_cast<SObjectFetchRequest*>(sender());
 
     beginResetModel(); // this is *criminally* lazy
-    addContacts(req->objects());
+    addContacts(req->objects(), false);
     endResetModel();
 
     sDebug() <<"Finished, " << mObjects.count() << " objects";
