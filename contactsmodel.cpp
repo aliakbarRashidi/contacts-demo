@@ -70,7 +70,7 @@ void ContactsModel::addContacts(const QList<SObject> &objects, bool modelReset)
         it = qLowerBound(mObjects.begin(), mObjects.end(), obj, contactsSort);
         int dest;
         if (it == mObjects.end())
-            dest = mObjects.count() - 1;
+            dest = mObjects.count();
         else
             dest = it - mObjects.begin();
         
@@ -220,7 +220,7 @@ void ContactsModel::onReadUpdatesComplete()
                 it = qLowerBound(mObjects.begin(), mObjects.end(), object, contactsSort);
                 int dest;
                 if (it == mObjects.end())
-                    dest = mObjects.count() - 1;
+                    dest = mObjects.count();
                 else
                     dest = it - mObjects.begin();
 
@@ -228,8 +228,8 @@ void ContactsModel::onReadUpdatesComplete()
 
                 // do the actual move
                 beginMoveRows(QModelIndex(), source, source, QModelIndex(), (dest > source) ? (dest + 1) : dest);
-                mObjects.removeAt(source);
                 mObjects.insert(it, object);
+                mObjects.removeAt(source);
                 endMoveRows();
             } else {
                 emit dataChanged(index(i, 0, QModelIndex()), index(i, 0, QModelIndex()));
