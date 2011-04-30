@@ -77,6 +77,8 @@ void ContactsModel::addContacts(const QList<SObject> &objects, bool modelReset)
         if (!modelReset)
             beginInsertRows(QModelIndex(), dest, dest);
         mObjects.insert(dest, obj);
+        mContactHash.insert(obj.id().localId(), new Contact(obj, this));
+
         if (!modelReset)
             endInsertRows();
     }
@@ -175,6 +177,7 @@ void ContactsModel::onObjectsRemoved(const QList<SObjectLocalId> &objects)
                 sDebug() << "Removing object at " << i;
                 beginRemoveRows(QModelIndex(), i, i);
                 mObjects.removeAt(i);
+                mContactHash.take(id)->deleteLater();
                 endRemoveRows();
                 i--; // so we check the next one above the one we just removed
             }
@@ -256,8 +259,10 @@ void ContactsModel::onReadUpdatesComplete()
 QObject *ContactsModel::contactFor(int rowNumber)
 {
     // XXX memory leak and ugly design
-    Contact *contact = new Contact(mObjects.at(rowNumber), this);
-    return contact;
+    const SObject &obj = mObjects.at(rowNumber);
+    QString uuid = obj.id().localId().toString();
+
+    return contactFor(uuid);
 }
 
 QObject *ContactsModel::blankContact()
@@ -265,3 +270,13 @@ QObject *ContactsModel::blankContact()
     /* XXX memory leak and ugly design */
     return new Contact(this);
 }
+
+Contact *ContactsModel::contactFor(const QString &uuid) const
+{
+    QHash<QString, Contact*>::ConstIterator it = mContactHash.find(uuid);
+    if (it == mContactHash.constEnd())
+        return 0;
+    else
+        return *it;
+}
+

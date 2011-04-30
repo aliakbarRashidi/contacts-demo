@@ -78,3 +78,7 @@ void Contact::setAvatar(const QUrl &avatar)
     emit avatarChanged();
 }
 
+QString Contact::localId() const
+{
+    return mData.id().localId().toString();
+}

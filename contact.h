@@ -28,6 +28,9 @@ public:
     QUrl avatar() const;
     void setAvatar(const QUrl &phoneNumber);
 
+    Q_PROPERTY(QString localId READ localId);
+    QString localId() const;
+
 public slots:
     void remove();
     void save();

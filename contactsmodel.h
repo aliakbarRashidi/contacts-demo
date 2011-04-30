@@ -47,6 +47,8 @@ public:
     Q_INVOKABLE QObject *contactFor(int rowNumber);
     Q_INVOKABLE QObject *blankContact();
 
+    Contact *contactFor(const QString &uuid) const;
+
 private slots:
     void onReadAllComplete();
     void onObjectsAdded(const QList<SObjectLocalId> &objects);
@@ -60,4 +62,5 @@ private:
 
     SObjectManager *mManager;
     QList<SObject> mObjects;
+    QHash<QString, Contact *> mContactHash;
 };
