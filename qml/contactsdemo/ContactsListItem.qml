@@ -3,6 +3,7 @@ import QtQuick 1.0
 Item {
     width: ListView.view.width
     height: 70
+    id: "delegateInstance"
 
     Avatar {
         id: avatarImage
@@ -45,5 +46,14 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: ListView.view.currentIndex = index
+    }
+
+    ListView.onRemove: SequentialAnimation {
+        PropertyAction { target: delegateInstance; property: "ListView.delayRemove"; value: true }
+        ParallelAnimation {
+            NumberAnimation { target: delegateInstance; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+            NumberAnimation { target: delegateInstance; property: "opacity"; to: 0; duration: 200; easing.type: Easing.InOutQuad }
+        }
+        PropertyAction { target: delegateInstance; property: "ListView.delayRemove"; value: false }
     }
 }
