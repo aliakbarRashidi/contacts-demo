@@ -40,6 +40,7 @@ ContactsModel::ContactsModel(SObjectManager *m, QObject *parent)
     roles[LastNameRole] = "lastName";
     roles[PhoneNumberRole] = "phoneNumber";
     roles[ContactIdRole] = "contactId";
+    roles[AvatarSerialRole] = "avatarSerial";
     setRoleNames(roles);
 
     connect(mManager, SIGNAL(objectsAdded(QList<SObjectLocalId>)), SLOT(onObjectsAdded(QList<SObjectLocalId>)));
@@ -140,6 +141,8 @@ QVariant ContactsModel::data(const QModelIndex &index, int role) const
         return obj.value("phoneNumber");
     case ContactIdRole:
         return obj.id().localId().toString();
+    case AvatarSerialRole:
+        return mContactHash[obj.id().localId()]->avatarSerial();
     }
 
     return QVariant();
@@ -210,6 +213,9 @@ void ContactsModel::onReadUpdatesComplete()
 
             sDebug() << oldObject.value("firstName");
             sDebug() << object.value("firstName");
+
+            // update avatar serial so QML reloads the image
+            mContactHash[object.id().localId()]->setAvatarSerial(mContactHash[object.id().localId()]->avatarSerial() + 1);
 
             // check if the firstName and lastName changed, if so, we need to
             // move them, if not, we need to just emit dataChanged

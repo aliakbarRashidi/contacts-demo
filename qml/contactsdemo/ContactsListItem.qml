@@ -13,7 +13,7 @@ Item {
         sourceSize: Qt.size(60, 60)
         width: 60
 
-        source: "image://contactavatar/" + contactId
+        source: "image://contactavatar/" + contactId  + "/" + avatarSerial
     }
 
     Column {

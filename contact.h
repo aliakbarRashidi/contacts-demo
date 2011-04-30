@@ -30,6 +30,10 @@ public:
     void setAvatar(const QImage &avatar);
     Q_INVOKABLE void setAvatar(const QUrl &avatarPath);
 
+    Q_PROPERTY(int avatarSerial READ avatarSerial WRITE setAvatarSerial NOTIFY avatarSerialChanged)
+    int avatarSerial() const;
+    void setAvatarSerial(int avatarSerial);
+
     Q_PROPERTY(QString localId READ localId);
     QString localId() const;
 
@@ -42,8 +46,10 @@ signals:
     void lastNameChanged();
     void phoneNumberChanged();
     void avatarChanged();
+    void avatarSerialChanged();
 
 private:
     SObject mData;
+    int mAvatarSerial;
 };
 

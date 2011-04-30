@@ -9,6 +9,7 @@ extern SObjectManager *globalManager;
 Contact::Contact(const SObject &object, QObject *parent)
     : QObject(parent)
     , mData(SObject(object))
+    , mAvatarSerial(0)
 {
 }
 
@@ -75,9 +76,21 @@ QImage Contact::avatar() const
 
 void Contact::setAvatar(const QImage &avatar)
 {
+    mAvatarSerial++;
     qDebug() << avatar << QVariant::fromValue(avatar).toByteArray().toHex();
     mData.setValue("avatar", QVariant::fromValue(avatar));
     emit avatarChanged();
+}
+
+void Contact::setAvatarSerial(int avatarSerial)
+{
+    mAvatarSerial = avatarSerial;
+    emit avatarSerialChanged();
+}
+
+int Contact::avatarSerial() const
+{
+    return mAvatarSerial;
 }
 
 void Contact::setAvatar(const QUrl &avatarPath)

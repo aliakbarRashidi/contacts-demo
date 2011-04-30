@@ -13,7 +13,8 @@ ContactAvatarProvider::ContactAvatarProvider()
 
 QPixmap ContactAvatarProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    Contact *contact = contactsModel->contactFor(id.section('/', 0));
+    qDebug() << Q_FUNC_INFO << "Getting avatar for " << id << id.section('/', 0, 0);
+    Contact *contact = contactsModel->contactFor(id.section('/', 0, 0));
     qDebug() << contact;
     if (!contact)
         return QPixmap();

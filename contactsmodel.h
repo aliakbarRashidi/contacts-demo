@@ -33,7 +33,8 @@ public:
         FirstNameRole = Qt::UserRole,
         LastNameRole,
         PhoneNumberRole,
-        ContactIdRole
+        ContactIdRole,
+        AvatarSerialRole
     };
 
     ContactsModel(SObjectManager *manager, QObject *parent = 0);

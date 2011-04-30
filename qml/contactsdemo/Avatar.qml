@@ -6,7 +6,7 @@ Image {
     property QtObject contact
 
     /* If source is set explicitly, this binding is overwritten and all is well. */
-    source: (contact === undefined) ? "" : ("image://contactavatar/" + contact.localId + "/" + contact.avatar)
+    source: (contact === undefined) ? "" : ("image://contactavatar/" + contact.localId + "/" + contact.avatar  + "/" + contact.avatarSerial)
 
     BorderImage {
         anchors.fill: parent
