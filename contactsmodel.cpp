@@ -162,9 +162,7 @@ void ContactsModel::onFetchedNewObjects()
 {
     SObjectFetchRequest *req = qobject_cast<SObjectFetchRequest*>(sender());
 
-    beginResetModel(); // this is *criminally* lazy
     addContacts(req->objects(), false);
-    endResetModel();
 
     sDebug() <<"Finished, " << mObjects.count() << " objects";
     req->deleteLater();
