@@ -52,8 +52,17 @@ Item {
         PropertyAction { target: delegateInstance; property: "ListView.delayRemove"; value: true }
         ParallelAnimation {
             NumberAnimation { target: delegateInstance; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-            NumberAnimation { target: delegateInstance; property: "opacity"; to: 0; duration: 200; easing.type: Easing.InOutQuad }
+            NumberAnimation { target: delegateInstance; property: "opacity"; to: 0; duration: 120; easing.type: Easing.InOutQuad }
         }
         PropertyAction { target: delegateInstance; property: "ListView.delayRemove"; value: false }
+    }
+
+    ListView.onAdd: SequentialAnimation {
+        PropertyAction { target: delegateInstance; property: "height"; value: 0 }
+        PropertyAction { target: delegateInstance; property: "opacity"; value: 0 }
+        ParallelAnimation {
+            NumberAnimation { target: delegateInstance; property: "height"; to: 70; duration: 250; easing.type: Easing.InOutQuad }
+            NumberAnimation { target: delegateInstance; property: "opacity"; to: 100; duration: 400; easing.type: Easing.InOutQuad }
+        }
     }
 }
