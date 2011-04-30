@@ -204,10 +204,13 @@ void ContactsModel::onReadUpdatesComplete()
     QList<SObject> objects = req->objects();
 
     foreach (const SObject &object, objects) {
+        bool foundObject = false;
         for (int i = 0; i < mObjects.count(); ++i) {
             const SObject &oldObject = mObjects.at(i);
             if (oldObject.id().localId() != object.id().localId())
                 continue;
+
+            foundObject = true;
 
             sDebug() << oldObject.value("firstName");
             sDebug() << object.value("firstName");
@@ -257,6 +260,18 @@ void ContactsModel::onReadUpdatesComplete()
             }
 
             break;
+        }
+
+        if (!foundObject) {
+            // TODO: FIXME: HACK: This is working around a bug in
+            // SObjectSaveRequest. SOSR calculates objectsAdded and
+            // objectsUpdated by looking at SObject::id(). if one doesn't
+            // exist, it is calculated (and it is assumed it is a new object).
+            //
+            // this works for local usage and IPC, but in the case of remote
+            // sync, objects may arrive which are technically new (to that
+            // device) but which already have an ID.
+            addContacts(QList<SObject>() << object, false);
         }
     }
 
