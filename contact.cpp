@@ -103,3 +103,18 @@ QString Contact::localId() const
 {
     return mData.id().localId().toString();
 }
+
+void Contact::setData(SObject data)
+{
+    SObject oldData = mData;
+    mData = data;
+
+    if (firstName() != oldData.value("firstName"))
+        emit firstNameChanged();
+    
+    if (lastName() != oldData.value("lastName"))
+        emit lastNameChanged();
+
+    if (phoneNumber() != oldData.value("phoneNumber"))
+        emit phoneNumberChanged();
+}

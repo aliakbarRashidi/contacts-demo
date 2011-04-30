@@ -37,6 +37,8 @@ public:
     Q_PROPERTY(QString localId READ localId);
     QString localId() const;
 
+    void setData(SObject mData);
+
 public slots:
     void remove();
     void save();

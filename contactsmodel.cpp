@@ -216,6 +216,7 @@ void ContactsModel::onReadUpdatesComplete()
 
             // update avatar serial so QML reloads the image
             mContactHash[object.id().localId()]->setAvatarSerial(mContactHash[object.id().localId()]->avatarSerial() + 1);
+            mContactHash[object.id().localId()]->setData(object);
 
             // check if the firstName and lastName changed, if so, we need to
             // move them, if not, we need to just emit dataChanged
@@ -247,6 +248,9 @@ void ContactsModel::onReadUpdatesComplete()
                     mObjects.removeAt(source);
                     mObjects.insert(dest, object);
                     endMoveRows();
+                    
+                    QModelIndex row = index(dest, 0, QModelIndex());
+                    emit dataChanged(row, row);
                 }
             } else {
                 QModelIndex row = index(i, 0, QModelIndex());
