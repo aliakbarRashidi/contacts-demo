@@ -1,5 +1,6 @@
 #include <QObject>
 #include <QUrl>
+#include <QImage>
 
 #include <sobject.h>
 
@@ -24,9 +25,10 @@ public:
     QString phoneNumber() const;
     void setPhoneNumber(const QString &phoneNumber);
 
-    Q_PROPERTY(QUrl avatar READ avatar WRITE setAvatar NOTIFY avatarChanged);
-    QUrl avatar() const;
-    void setAvatar(const QUrl &phoneNumber);
+    Q_PROPERTY(QImage avatar READ avatar WRITE setAvatar NOTIFY avatarChanged);
+    QImage avatar() const;
+    void setAvatar(const QImage &avatar);
+    Q_INVOKABLE void setAvatar(const QUrl &avatarPath);
 
     Q_PROPERTY(QString localId READ localId);
     QString localId() const;

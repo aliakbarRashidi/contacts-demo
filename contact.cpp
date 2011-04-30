@@ -67,15 +67,23 @@ void Contact::setPhoneNumber(const QString &phoneNumber)
     emit phoneNumberChanged();
 }
 
-QUrl Contact::avatar() const
+QImage Contact::avatar() const
 {
-    return mData.value("avatar").toUrl();
+    qDebug() << mData.value("avatar").toByteArray().toHex();
+    return mData.value("avatar").value<QImage>();
 }
 
-void Contact::setAvatar(const QUrl &avatar)
+void Contact::setAvatar(const QImage &avatar)
 {
-    mData.setValue("avatar", avatar);
+    qDebug() << avatar << QVariant::fromValue(avatar).toByteArray().toHex();
+    mData.setValue("avatar", QVariant::fromValue(avatar));
     emit avatarChanged();
+}
+
+void Contact::setAvatar(const QUrl &avatarPath)
+{
+    qDebug() << avatarPath;
+    setAvatar(QImage(avatarPath.toLocalFile()));
 }
 
 QString Contact::localId() const

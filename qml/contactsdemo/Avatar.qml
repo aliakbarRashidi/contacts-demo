@@ -3,6 +3,11 @@ import QtQuick 1.0
 Image {
     fillMode: Image.Stretch
 
+    property QtObject contact
+
+    /* If source is set explicitly, this binding is overwritten and all is well. */
+    source: (contact === undefined) ? "" : ("image://contactavatar/" + contact.localId + "/" + contact.avatar)
+
     BorderImage {
         anchors.fill: parent
         anchors.margins: -2

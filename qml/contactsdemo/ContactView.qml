@@ -13,7 +13,7 @@ Item {
         anchors.topMargin: 16
         anchors.rightMargin: 16
 
-        source: contact.avatar
+        contact: contactView.contact
     }
 
     Text {
@@ -150,7 +150,7 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            contactView.contact.avatar = filePath
+                            contactView.contact.setAvatar(filePath)
                             avatarSelector.visible = false
                         }
                     }

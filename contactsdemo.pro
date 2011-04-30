@@ -26,10 +26,12 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
            contact.cpp \
-           contactsmodel.cpp
+           contactsmodel.cpp \
+    contactavatarprovider.cpp
 
 HEADERS += contact.h \
-           contactsmodel.h
+           contactsmodel.h \
+    contactavatarprovider.h
 
 CONFIG += link_pkgconfig
 PKGCONFIG += saesu

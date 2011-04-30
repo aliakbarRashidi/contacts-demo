@@ -39,7 +39,7 @@ ContactsModel::ContactsModel(SObjectManager *m, QObject *parent)
     roles[FirstNameRole] = "firstName";
     roles[LastNameRole] = "lastName";
     roles[PhoneNumberRole] = "phoneNumber";
-    roles[AvatarPathRole] = "avatar";
+    roles[ContactIdRole] = "contactId";
     setRoleNames(roles);
 
     connect(mManager, SIGNAL(objectsAdded(QList<SObjectLocalId>)), SLOT(onObjectsAdded(QList<SObjectLocalId>)));
@@ -138,8 +138,8 @@ QVariant ContactsModel::data(const QModelIndex &index, int role) const
         return obj.value("lastName");
     case PhoneNumberRole:
         return obj.value("phoneNumber");
-    case AvatarPathRole:
-        return obj.value("avatar");
+    case ContactIdRole:
+        return obj.id().localId().toString();
     }
 
     return QVariant();
