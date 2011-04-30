@@ -53,6 +53,7 @@ ListView {
             fillMode: Image.TileHorizontally
         }
     }
+    highlightMoveDuration: 350
 
     onCurrentIndexChanged: {
         if (currentIndex < 0)
