@@ -139,7 +139,7 @@ Item {
             anchors.margins: 20
 
             model: FolderListModel {
-                folder: "."
+                folder: "../../thumbs/"
             }
             delegate: Item {
                 width: GridView.view.cellWidth
