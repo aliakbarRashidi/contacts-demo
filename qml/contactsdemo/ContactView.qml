@@ -150,6 +150,10 @@ Item {
                     Avatar {
                         id: img
                         source: filePath
+                        fillMode: Image.PreserveAspectFit
+                        height: 128
+                        width: 128
+
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {

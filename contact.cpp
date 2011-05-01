@@ -97,10 +97,10 @@ void Contact::setAvatar(const QUrl &avatarPath)
 {
     qDebug() << avatarPath;
     
-    // TODO: when we write a GalleryModel, move thumbnailing to there, and
-    // don't block the UI thread while doing it. kthx.
+    // TODO: when we write a GalleryModel, we'll want some way to select part of
+    // an image to use as an avatar, but this lazy hack will do for now
     QImage img(avatarPath.toLocalFile());
-    setAvatar(img.scaled(QSize(128, 128), Qt::KeepAspectRatio, SmoothTransformation));
+    setAvatar(img.scaled(QSize(128, 128), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 QString Contact::localId() const
