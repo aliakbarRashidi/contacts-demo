@@ -100,7 +100,16 @@ void Contact::setAvatar(const QUrl &avatarPath)
     // TODO: when we write a GalleryModel, we'll want some way to select part of
     // an image to use as an avatar, but this lazy hack will do for now
     QImage img(avatarPath.toLocalFile());
-    setAvatar(img.scaled(QSize(128, 128), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+    // scale up or down
+    img = img.scaled(QSize(128, 128), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+
+    if (img.size().height() > 128 || img.size().width() > 128) {
+        // scale down, and crop it to a square
+        // TODO: would be nice to pick a region of the image to scale+crop.
+        img = img.copy(QRect(0, 0, 128, 128));
+    }
+    setAvatar(img);
 }
 
 QString Contact::localId() const
