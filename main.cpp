@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     QmlApplicationViewer viewer;
     viewer.engine()->addImageProvider("contactavatar", new ContactAvatarProvider);
 
-    globalManager = new SObjectManager("saesu");
+    globalManager = new SObjectManager("contacts");
 
     contactsModel = new ContactsModel(globalManager);
     QDeclarativeContext *context = viewer.rootContext();
