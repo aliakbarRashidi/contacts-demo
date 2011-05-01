@@ -215,8 +215,6 @@ void ContactsModel::onReadUpdatesComplete()
             sDebug() << oldObject.value("firstName");
             sDebug() << object.value("firstName");
 
-            // update avatar serial so QML reloads the image
-            mContactHash[object.id().localId()]->setAvatarSerial(mContactHash[object.id().localId()]->avatarSerial() + 1);
             mContactHash[object.id().localId()]->setData(object);
 
             // check if the firstName and lastName changed, if so, we need to

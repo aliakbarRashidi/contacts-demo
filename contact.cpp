@@ -130,4 +130,7 @@ void Contact::setData(SObject data)
 
     if (phoneNumber() != oldData.value("phoneNumber"))
         emit phoneNumberChanged();
+
+    // update avatar serial so QML reloads the image
+    setAvatarSerial(avatarSerial() + 1);
 }
