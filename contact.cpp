@@ -96,7 +96,11 @@ int Contact::avatarSerial() const
 void Contact::setAvatar(const QUrl &avatarPath)
 {
     qDebug() << avatarPath;
-    setAvatar(QImage(avatarPath.toLocalFile()));
+    
+    // TODO: when we write a GalleryModel, move thumbnailing to there, and
+    // don't block the UI thread while doing it. kthx.
+    QImage img(avatarPath.toLocalFile());
+    setAvatar(img.scaled(QSize(128, 128), Qt::KeepAspectRatio, SmoothTransformation));
 }
 
 QString Contact::localId() const
