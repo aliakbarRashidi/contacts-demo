@@ -132,27 +132,37 @@ Item {
         id: avatarSelector
         visible: false
 
-        ListView {
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
+        GridView {
+            anchors.fill: parent
+            cellWidth: 150
+            cellHeight: 150
+            anchors.margins: 20
+
             model: FolderListModel {
                 folder: "."
             }
             delegate: Item {
-                width: img.width
-                height: img.height
-                Image {
-                    id: img
-                    source: filePath
+                width: GridView.view.cellWidth
+                height: GridView.view.cellHeight
+                id: avatarSelectorDelegate
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            contactView.contact.setAvatar(filePath)
-                            avatarSelector.visible = false
+                Column {
+                    Avatar {
+                        id: img
+                        source: filePath
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                contactView.contact.setAvatar(filePath)
+                                avatarSelector.visible = false
+                            }
                         }
+                    }
+
+                    Text {
+                        anchors.top: avatarSelectorDelegate.bottom
+                        text: fileName
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                 }
             }
