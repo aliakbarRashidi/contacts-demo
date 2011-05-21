@@ -120,17 +120,19 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    avatarSelector.visible = true
+                    avatarSelector.state = "visible"
                 }
             }
         }
     }
 
     Rectangle {
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
+        x: 0
         clip: true
         id: avatarSelector
-        visible: false
+        state: "hidden"
 
         GridView {
             anchors.fill: parent
@@ -158,7 +160,7 @@ Item {
                             anchors.fill: parent
                             onClicked: {
                                 contactView.contact.setAvatar(filePath)
-                                avatarSelector.visible = false
+                                avatarSelector.state = "hidden"
                             }
                         }
                     }
@@ -171,6 +173,74 @@ Item {
                 }
             }
         }
+
+
+        states: [
+            State {
+                name: "hidden"
+                PropertyChanges {
+                    target: avatarSelector
+                    y: +parent.height
+                }
+                PropertyChanges {
+                    target: avatarSelector
+                    visible: false
+                }
+            },
+            
+            State {
+                name: "visible"
+                PropertyChanges {
+                    target: avatarSelector
+                    y: 0
+                }
+                PropertyChanges {
+                    target: avatarSelector
+                    visible: true
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "hidden"
+                to: "visible"
+
+                SequentialAnimation {
+                    PropertyAction {
+                        target: avatarSelector
+                        property: "visible"
+                        value: "true"
+                    }
+
+                    PropertyAnimation {
+                        target: avatarSelector
+                        property: "y"
+                        easing.type: Easing.OutBounce
+                        duration: 800
+                    }
+                }
+            },
+
+            Transition {
+                from: "visible"
+                to: "hidden"
+
+                SequentialAnimation {
+                    PropertyAnimation {
+                        target: avatarSelector;
+                        property: "y";
+                        easing.type: Easing.OutBack
+                        duration: 600
+                    }
+                    PropertyAction {
+                        target: avatarSelector;
+                        property: "visible";
+                        value: "false"
+                    }
+                }
+            }
+        ]
     }
 
 
